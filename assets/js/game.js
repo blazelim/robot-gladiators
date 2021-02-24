@@ -77,7 +77,21 @@ var fight = function(enemyName) {
 };
 
 for(var i = 0; i < enemyNames.length; i++) { 
+    
+    if (playerHealth > 0) {
+        //let player know what round they are in, remember that arrays start at zero
+        window.alert ("Welcome to Robot Gladiators! Round " + ( i + 1 ));
+    }
+    else {
+        window.alert ("You have lost your robot in battle! Game Over");
+    }
+    // pick new enemy to fight based on the index of the enemy Names array
     var pickedEnemyName = enemyNames[i];
+
+    // reset enemyHealth before starting new fight
     enemyHealth = 50;
+
+    //use debugger to pause script from running and check whats going on at the moment in the code
+
     fight(pickedEnemyName);
 }
