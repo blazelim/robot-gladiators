@@ -174,12 +174,22 @@ var shop = function () {
 
 // function to end the entire game
 var endGame = function () {
-    //if player is still alive, player wins!
-    if(playerInfo.health > 0) {
-        window.alert("Great job, you've survived the game! You now have a score of " + playerInfo.money + ".");
+    window.alert("The game has now ended. Let's see how you did!");
+
+    // check local storage for highscore, if its not there, use 0
+    var highScore = localStorage.getItem("highscore");
+    if (highScore === null) {
+        highScore = 0;
+    }
+
+    if (playerInfo.money > highScore) {
+        localStorage.setItem ("highscore", playerInfo.money);
+        localStorage.setItem("name", playerInfo.name);
+
+        alert(playerInfo.name + " now has the high score of " + playerInfo.money + "!");
     }
     else {
-        window.alert ("You've lost your robot in battle.");
+        alert(playerInfo.name + " did not beat the high score of " + highScore + ". Maybe next time!");
     }
 
     //ask player if they'd like to play again
@@ -197,13 +207,21 @@ var playAgainConfirm = window.confirm("Would you like to play again?");
 
 
 var fight = function(enemy) {
+    var isPlayerTurn = true;
+
+    if (Math.random() > 0.5) {
+        isPlayerTurn = false;
+    }
     // repeat and execute as long as the enemy robot is alive
     while (enemy.health > 0 && playerInfo.health >0) {
-        if (fightOrSkip()) {
+        if (isPlayerTurn) {
+            if (fightOrSkip()) {
             // if true, leave fight by breaking loop
             break;
-        }
-        //fightOrSkip();
+            }
+        
+
+            //fightOrSkip();
             //Subtract the value of 'playerInfo.attack' from the value of 'enemy.health' and use that result to update the value in the 'enemy.health' variable
             var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
 
@@ -223,13 +241,16 @@ var fight = function(enemy) {
             } else {
                 window.alert(enemy.name + " still has " + enemy.health + " health left.");
             }
-            // Subtract the value of 'enemy.attack' from the value of 'playerInfo.health and use that result to update the value in the 'playerInfo.health' variable
+        //player gets attacked first
+        } else {
+                        // Subtract the value of 'enemy.attack' from the value of 'playerInfo.health and use that result to update the value in the 'playerInfo.health' variable
             var damage = randomNumber(enemy.attack - 3 , enemy.attack);
             playerInfo.health = Math.max(0 , playerInfo.health - damage);
             // Log a resulting message to the console so we know that it worked
             console.log(
                 enemy.name + " attacked " + playerInfo.name + ". " + playerInfo.name + " now has " + playerInfo.health + " health remaining."
             );
+
 
             //check player's health
             if (playerInfo.health <= 0 ) {
@@ -238,6 +259,9 @@ var fight = function(enemy) {
             } else {
                 window.alert(playerInfo.name + " still has " + playerInfo.health + " health left.");
             }
+        }
+        //switch turn order for next round
+        isPlayerTurn = !isPlayerTurn;
     } 
 };
 
